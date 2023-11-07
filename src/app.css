@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	font-family: 'Inter', sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+	:root {
+		font-family: 'Inter var', sans-serif;
+	}
+}
+
+body {
+	@apply bg-blue-50;
+}
+
+.waypoint-marker {
+	@apply bg-slate-600 text-white rounded-md drop-shadow-lg !flex items-center justify-between px-2;
+	margin-top: -40px !important;
+	font-family: 'Inter', sans-serif;
+
+	&::after {
+		@apply w-0 h-0 absolute -bottom-2 left-1/2 -ml-2 border-solid border-transparent border-t-slate-600;
+		content: '';
+		border-width: 8px 8px 0 8px;
+	}
+
+	svg {
+		@apply w-5 h-5 mx-auto;
+	}
+
+	&__flag {
+		@apply text-emerald-300 w-8;
+	}
+
+	&__ws {
+		@apply text-sky-300 w-8;
+	}
+
+	&__medic,
+	&__ambulance {
+		@apply text-red-400 w-8;
+	}
+
+	&__km {
+		@apply w-8 h-8 flex items-center justify-center font-semibold;
+		font-feature-settings: 'ss01' 1;
+	}
+}
