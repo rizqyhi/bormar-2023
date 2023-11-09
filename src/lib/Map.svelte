@@ -2,9 +2,6 @@
 	export let gpxFile: string;
 
 	import { onMount } from 'svelte';
-	import doctor from '$lib/icons/doctor.svg?raw';
-	import glass from '$lib/icons/glass.svg?raw';
-	import ambulance from '$lib/icons/ambulance.svg?raw';
 
 	onMount(async () => {
 		const L = await import('leaflet-gpx');
@@ -18,8 +15,8 @@
 
 		function flagIcon() {
 			return L.divIcon({
-				html: `<div class="waypoint-marker__flag"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="M360-720h80v-80h-80v80Zm160 0v-80h80v80h-80ZM360-400v-80h80v80h-80Zm320-160v-80h80v80h-80Zm0 160v-80h80v80h-80Zm-160 0v-80h80v80h-80Zm160-320v-80h80v80h-80Zm-240 80v-80h80v80h-80ZM200-160v-640h80v80h80v80h-80v80h80v80h-80v320h-80Zm400-320v-80h80v80h-80Zm-160 0v-80h80v80h-80Zm-80-80v-80h80v80h-80Zm160 0v-80h80v80h-80Zm80-80v-80h80v80h-80Z"/></svg></div>`,
-				iconSize: [32, 32],
+				html: `<div class="waypoint-marker__flag">🚩</div>`,
+				iconSize: [48, 48],
 				className: `waypoint-marker`
 			});
 		}
@@ -41,20 +38,32 @@
 			}
 
 			if (markerTypes.includes('WS')) {
-				iconHtml += `<div class="waypoint-marker__ws">${glass}</div>`;
+				iconHtml += `<div class="waypoint-marker__ws">💧</div>`;
 			}
 
 			if (markerTypes.includes('MEDIC')) {
-				iconHtml += `<div class="waypoint-marker__medic">${doctor}</div>`;
+				iconHtml += `<div class="waypoint-marker__medic">🏥</div>`;
 			}
 
 			if (markerTypes.includes('AMBULANCE')) {
-				iconHtml += `<div class="waypoint-marker__ambulance">${ambulance}</div>`;
+				iconHtml += `<div class="waypoint-marker__ambulance">🚑</div>`;
+			}
+
+			if (markerTypes.includes('FRUIT')) {
+				iconHtml += `<div class="waypoint-marker__ambulance">🍉</div>`;
+			}
+
+			if (markerTypes.includes('SHOWER')) {
+				iconHtml += `<div class="waypoint-marker__ambulance">🚿</div>`;
+			}
+
+			if (markerTypes.includes('SPONGE')) {
+				iconHtml += `<div class="waypoint-marker__ambulance">🧽</div>`;
 			}
 
 			const iconLayer = L.divIcon({
 				html: iconHtml,
-				iconSize: [32 * markerTypes.length, 32],
+				iconSize: [32 * markerTypes.length + 16, 48],
 				className: `waypoint-marker`
 			});
 
