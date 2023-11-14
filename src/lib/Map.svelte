@@ -1,17 +1,32 @@
 <script lang="ts">
 	export let gpxFile: string;
 
+	import type L from 'leaflet';
 	import { onMount } from 'svelte';
 
-	onMount(async () => {
-		const L = await import('leaflet-gpx');
-		const map = L.map('map').setView([-7.6079, 110.2038], 16);
+	let L = null;
+	let map = null;
+	let gpxLayer = null;
+	let markers = [];
 
+	onMount(async () => {
+		L = await import('leaflet-gpx');
+		map = L.map('map').setView([-7.6079, 110.2038], 16);
 		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 16,
 			minZoom: 13,
 			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 		}).addTo(map);
+	});
+
+	$: if (L && map) {
+		if (gpxLayer) {
+			map.removeLayer(gpxLayer);
+		}
+
+		if (markers) {
+			markers.forEach((marker) => marker.removeFrom(map));
+		}
 
 		function flagIcon() {
 			return L.divIcon({
@@ -70,7 +85,7 @@
 			return L.marker(latlng, { icon: iconLayer });
 		}
 
-		new L.GPX(`/${gpxFile}`, {
+		gpxLayer = new L.GPX(`/${gpxFile}`, {
 			async: true,
 			polyline_options: {
 				color: '#ef4444',
@@ -95,10 +110,12 @@
 			.on('addpoint', function (e) {
 				if (e.point_type !== 'waypoint') return;
 
-				combinedIcon([e.point._latlng.lat, e.point._latlng.lng], e.point.options.title).addTo(map);
+				markers.push(
+					combinedIcon([e.point._latlng.lat, e.point._latlng.lng], e.point.options.title).addTo(map)
+				);
 			})
 			.addTo(map);
-	});
+	}
 </script>
 
 <div id="map" style="height: calc(100vh - 64px)" />
