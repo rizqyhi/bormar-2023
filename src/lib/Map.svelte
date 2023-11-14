@@ -1,17 +1,18 @@
 <script lang="ts">
 	export let gpxFile: string;
 
-	import type L from 'leaflet';
+	import type * as Leaflet from 'leaflet';
 	import { onMount } from 'svelte';
 
-	let L = null;
-	let map = null;
-	let gpxLayer = null;
-	let markers = [];
+	let L: null | Leaflet = null;
+	let map: null | Leaflet.Map = null;
+	let gpxLayer: null | Leaflet.GPX = null;
+	let markers: L.Marker[] = [];
 
 	onMount(async () => {
 		L = await import('leaflet-gpx');
 		map = L.map('map').setView([-7.6079, 110.2038], 16);
+
 		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 			maxZoom: 16,
 			minZoom: 13,
@@ -19,13 +20,13 @@
 		}).addTo(map);
 	});
 
-	$: if (L && map) {
+	$: if (L && map !== null) {
 		if (gpxLayer) {
 			map.removeLayer(gpxLayer);
 		}
 
 		if (markers) {
-			markers.forEach((marker) => marker.removeFrom(map));
+			markers.forEach((marker) => map?.removeLayer(marker));
 		}
 
 		function flagIcon() {
@@ -104,10 +105,10 @@
 				]
 			}
 		})
-			.on('loaded', function (e) {
-				map.fitBounds(e.target.getBounds());
+			.on('loaded', function (e: L.LayerEvent) {
+				map?.fitBounds(e.target.getBounds());
 			})
-			.on('addpoint', function (e) {
+			.on('addpoint', function (e: L.LayerEvent) {
 				if (e.point_type !== 'waypoint') return;
 
 				markers.push(
